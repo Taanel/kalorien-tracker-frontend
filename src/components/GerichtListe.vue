@@ -1,11 +1,20 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import type { Gericht } from '@/types/gericht'
 
-const gerichte: Gericht[] = [
-  { name: 'Haferflocken mit Banane', kcal: 350 },
-  { name: 'Hähnchen mit Reis', kcal: 620 },
-  { name: 'Griechischer Salat', kcal: 280 },
-]
+const gerichte = ref<Gericht[]>([])
+
+async function ladeGerichte() {
+  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL
+  try {
+    const response = await fetch(`${baseUrl}/gerichte`)
+    gerichte.value = await response.json()
+  } catch (error) {
+    console.error('Fehler beim Laden der Gerichte:', error)
+  }
+}
+
+onMounted(ladeGerichte)
 </script>
 
 <template>
